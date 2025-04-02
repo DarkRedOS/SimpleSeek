@@ -1,13 +1,71 @@
 const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
-const API_KEY = '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'; // Your API key
-
 let chatHistory = [];
+let API_KEY = localStorage.getItem('openrouter_api_key');
+
+// Check if API key exists in localStorage
+if (API_KEY) {
+    document.getElementById('apiContainer').style.display = 'none';
+    document.getElementById('chatContainer').style.display = 'block';
+} else {
+    document.getElementById('apiContainer').style.display = 'block';
+    document.getElementById('chatContainer').style.display = 'none';
+}
+
+async function saveApiKey() {
+    const keyInput = document.getElementById('apiKey');
+    API_KEY = keyInput.value.trim();
+    
+    if (API_KEY) {
+        const testResult = await validateApiKey(API_KEY);
+        if (testResult.valid) {
+            localStorage.setItem('openrouter_api_key', API_KEY);
+            document.getElementById('apiContainer').style.display = 'none';
+            document.getElementById('chatContainer').style.display = 'block';
+        } else {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'api-error';
+            errorDiv.textContent = `Invalid key: ${testResult.error}`;
+            document.getElementById('apiContainer').appendChild(errorDiv);
+        }
+    }
+}
+
+async function validateApiKey(key) {
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${key}`,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                model: "deepseek/deepseek-r1:free",
+                messages: [{ role: "user", content: "test" }],
+                temperature: 0.7,
+                max_tokens: 1
+            })
+        });
+
+        if (response.status === 401) return { valid: false, error: "Unauthorized" };
+        if (!response.ok) return { valid: false, error: `HTTP error ${response.status}` };
+        
+        await response.json();
+        return { valid: true };
+    } catch (error) {
+        return { valid: false, error: error.message };
+    }
+}
 
 function addMessage(content, isUser = false) {
     const messagesDiv = document.getElementById('messages');
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
-    messageDiv.textContent = content;
+    if (isUser) {
+        messageDiv.textContent = content;
+    } else {
+        messageDiv.innerHTML = marked.parse(content);
+    }
     messagesDiv.appendChild(messageDiv);
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
@@ -53,6 +111,7 @@ async function sendMessage() {
                 model: "deepseek/deepseek-r1:free",
                 messages: [
                     { role: "system", content: "You are an AI assistant that helps people find information." },
+                    ...chatHistory,
                     { role: "user", content: message }
                 ],
                 temperature: 0.7,
@@ -77,6 +136,11 @@ async function sendMessage() {
     } finally {
         hideLoading();
     }
+}
+
+// Initialize chat if API key exists
+if (API_KEY) {
+    addMessage("Welcome back! How can I help you today?", false);
 }
 
 // Event listeners

@@ -9,12 +9,55 @@ body {
     flex-direction: column;
 }
 
+.api-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #111;
+    border-radius: 8px;
+    text-align: center;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    border: 1px solid #333;
+}
+
+.api-container h2 {
+    color: #fff;
+    margin-bottom: 1rem;
+}
+
+.api-container input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin: 1rem 0;
+    border: 1px solid #333;
+    border-radius: 4px;
+    background-color: #000;
+    color: #fff;
+    font-size: 1rem;
+}
+
+.api-container button {
+    background-color: #444;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.api-container button:hover {
+    background-color: #666;
+}
+
 .chat-container {
     max-width: 800px;
     margin: 0 auto;
     height: 90vh;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
 }
 
 .messages {
@@ -32,6 +75,9 @@ body {
     padding: 10px;
     background-color: #222;
     border-radius: 8px;
+    position: sticky;
+    bottom: 0;
+    margin-top: auto;
 }
 
 #userInput {
@@ -59,9 +105,48 @@ button:hover {
 
 .message {
     margin-bottom: 15px;
-    padding: 10px;
+    padding: 15px;
     border-radius: 4px;
     background-color: #222;
+}
+
+.message :is(h1, h2, h3, h4, h5, h6) {
+    color: #fff;
+    margin: 1rem 0;
+    border-bottom: 1px solid #444;
+    padding-bottom: 0.5rem;
+}
+
+.message pre {
+    background-color: #000;
+    padding: 1rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    margin: 1rem 0;
+}
+
+.message code {
+    font-family: monospace;
+    background-color: #000;
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+}
+
+.message ul,
+.message ol {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+}
+
+.message li {
+    margin: 0.5rem 0;
+}
+
+.message blockquote {
+    border-left: 3px solid #444;
+    padding-left: 1rem;
+    margin: 1rem 0;
+    color: #ccc;
 }
 
 .user-message {

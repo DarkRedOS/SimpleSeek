@@ -7,13 +7,20 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="chat-container">
+    <div class="api-container" id="apiContainer">
+        <h2>API Key Required</h2>
+        <p>Get your API key from <a href="https://openrouter.ai/" target="_blank">OpenRouter.ai</a> and enter it below:</p>
+        <input type="password" id="apiKey" placeholder="Paste your API key here">
+        <button onclick="saveApiKey()">Save Key</button>
+    </div>
+    <div class="chat-container" style="display:none;" id="chatContainer">
         <div class="messages" id="messages"></div>
         <div class="input-area">
             <input type="text" id="userInput" placeholder="Type your message...">
             <button onclick="sendMessage()">Send</button>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
