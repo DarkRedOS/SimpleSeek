@@ -599,7 +599,6 @@ a:hover {
   display: flex;
   gap: 12px;
   align-items: flex-end;
-  margin-bottom: 50px;
 }
 
 .input-container {
@@ -833,6 +832,9 @@ a:hover {
   /* Ensure the toggle button is always visible on smaller screens */
   .chat-header .toggle-sidebar-btn {
     display: block; /* Ensure it's not hidden by any other rule */
+  }
+  .input-area {
+    margin-bottom: 50px;
   }
 }
 
