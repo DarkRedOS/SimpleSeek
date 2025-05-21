@@ -599,6 +599,7 @@ a:hover {
   display: flex;
   gap: 12px;
   align-items: flex-end;
+  margin-bottom: 50px;
 }
 
 .input-container {
@@ -1203,7 +1204,9 @@ a:hover {
 
   .modal-body {
     padding: 12px 16px; /* Adjust modal body padding */
-    max-height: calc(100vh - 120px); /* Adjusted calculation for full screen modal */
+    max-height: calc(
+      100vh - 120px
+    ); /* Adjusted calculation for full screen modal */
   }
 
   .modal-footer {
@@ -1233,7 +1236,8 @@ a:hover {
     padding: 10px 35px 10px 10px; /* Adjust padding for eye button */
   }
 
-  .primary-btn, .secondary-btn {
+  .primary-btn,
+  .secondary-btn {
     font-size: 14px; /* Adjust button font size */
     padding: 10px 20px; /* Adjust button padding */
   }
