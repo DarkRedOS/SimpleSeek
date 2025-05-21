@@ -1,26 +1,224 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DeepSeek Chat</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="api-container" id="apiContainer">
-        <h2>API Key Required</h2>
-        <p>Get your API key from <a href="https://openrouter.ai/" target="_blank">OpenRouter.ai</a> and enter it below:</p>
-        <input type="password" id="apiKey" placeholder="Paste your API key here">
-        <button onclick="saveApiKey()">Save Key</button>
-    </div>
-    <div class="chat-container" style="display:none;" id="chatContainer">
-        <div class="messages" id="messages"></div>
-        <div class="input-area">
-            <input type="text" id="userInput" placeholder="Type your message...">
-            <button onclick="sendMessage()">Send</button>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- Sidebar -->
+      <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <h1><i class="fas fa-robot"></i> DeepSeek Chat</h1>
         </div>
+        <div class="sidebar-content">
+          <button id="newChatBtn" class="new-chat-btn">
+            <i class="fas fa-plus"></i> New Chat
+          </button>
+          <div class="conversation-list" id="conversationList">
+            <!-- Conversation history will be added here -->
+          </div>
+        </div>
+        <div class="sidebar-footer">
+          <button id="settingsBtn" class="settings-btn">
+            <i class="fas fa-cog"></i> Settings
+          </button>
+          <div class="app-info">
+            <p>Using DeepSeek via OpenRouter</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <!-- API Key screen -->
+        <div class="api-container" id="apiContainer">
+          <div class="api-card">
+            <div class="api-header">
+              <i class="fas fa-key fa-3x"></i>
+              <h2>API Key Required</h2>
+            </div>
+            <p>
+              Get your API key from
+              <a href="https://openrouter.ai/" target="_blank">OpenRouter.ai</a>
+              and enter it below:
+            </p>
+            <div class="api-input-group">
+              <input
+                type="password"
+                id="apiKey"
+                placeholder="Paste your API key here"
+              />
+              <button id="showApiKeyBtn" type="button">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+            <button id="saveApiKeyBtn" class="primary-btn">Save Key</button>
+          </div>
+        </div>
+
+        <!-- Chat screen -->
+        <div class="chat-container" style="display: none" id="chatContainer">
+          <div class="chat-header">
+            <button id="toggleSidebarBtn" class="icon-btn">
+              <i class="fas fa-bars"></i>
+            </button>
+            <div class="chat-title" id="currentChatTitle">New Conversation</div>
+            <div class="header-actions">
+              <button id="exportChatBtn" class="icon-btn" title="Export Chat">
+                <i class="fas fa-download"></i>
+              </button>
+              <button id="clearChatBtn" class="icon-btn" title="Clear Chat">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="model-selection">
+            <select id="modelSelect">
+              <option value="deepseek/deepseek-r1:free">
+                DeepSeek R1 (Free)
+              </option>
+              <!-- <option value="mistralai/mistral-7b-instruct:free">
+                Mistral 7B (Free)
+              </option>
+              <option value="anthropic/claude-3-haiku:free">
+                Claude 3 Haiku (Free)
+              </option>
+              <option value="google/gemini-1.5-pro:free">
+                Gemini 1.5 Pro (Free)
+              </option>
+              <option value="meta-llama/llama-3-70b-instruct:free">
+                Llama 3 70B (Free)
+              </option> -->
+            </select>
+            <div class="model-info">
+              <i class="fas fa-info-circle"></i>
+              <span class="tooltip">Select an AI model to chat with</span>
+            </div>
+          </div>
+
+          <div class="messages" id="messages">
+            <!-- Welcome message will be inserted via JS -->
+          </div>
+
+          <div class="input-area">
+            <div class="input-container">
+              <textarea
+                id="userInput"
+                placeholder="Type your message..."
+                rows="1"
+              ></textarea>
+              <button id="attachButton" class="icon-btn" title="Attach Files">
+                <i class="fas fa-paperclip"></i>
+              </button>
+            </div>
+            <button id="sendButton" class="send-btn">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Settings Modal -->
+        <div id="settingsModal" class="modal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h2>Settings</h2>
+              <button id="closeSettingsBtn" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+              <div class="settings-section">
+                <h3>API Key</h3>
+                <div class="setting-group">
+                  <label>OpenRouter API Key:</label>
+                  <div class="api-input-group">
+                    <input
+                      type="password"
+                      id="settingsApiKey"
+                      placeholder="Your API key"
+                    />
+                    <button id="showSettingsApiKeyBtn" type="button">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </div>
+                  <button id="updateApiKeyBtn" class="secondary-btn">
+                    Update Key
+                  </button>
+                </div>
+              </div>
+              <div class="settings-section">
+                <h3>Model Parameters</h3>
+                <div class="setting-group">
+                  <label for="temperatureSlider"
+                    >Temperature: <span id="temperatureValue">0.7</span></label
+                  >
+                  <input
+                    type="range"
+                    id="temperatureSlider"
+                    min="0"
+                    max="1"
+                    step="0.1"
+                    value="0.7"
+                  />
+                </div>
+                <div class="setting-group">
+                  <label for="maxTokensInput">Max Tokens:</label>
+                  <input
+                    type="number"
+                    id="maxTokensInput"
+                    min="100"
+                    max="4000"
+                    value="1000"
+                  />
+                </div>
+                <div class="setting-group">
+                  <label for="topPSlider"
+                    >Top P: <span id="topPValue">0.9</span></label
+                  >
+                  <input
+                    type="range"
+                    id="topPSlider"
+                    min="0"
+                    max="1"
+                    step="0.1"
+                    value="0.9"
+                  />
+                </div>
+              </div>
+              <div class="settings-section">
+                <h3>Appearance</h3>
+                <div class="setting-group">
+                  <label>Theme:</label>
+                  <div class="theme-selector">
+                    <button class="theme-btn active" data-theme="dark">
+                      Dark
+                    </button>
+                    <button class="theme-btn" data-theme="light">Light</button>
+                    <button class="theme-btn" data-theme="system">
+                      System
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button id="saveSettingsBtn" class="primary-btn">
+                Save Settings
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.0.2/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
     <script src="app.js"></script>
-</body>
+  </body>
 </html>
